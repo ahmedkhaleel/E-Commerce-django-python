@@ -16,11 +16,10 @@ def _cart_id(request):
 
 
 def add_cart(request, product_id):
-    product = Product.objects.get(id=product_id)  # get the product
-    size = request.GET['size']
-    color = request.GET['color']
-    return HttpResponse(size + color)
-    exit()
+    if request.method == 'POST':
+        size = request.POST['size']
+        color = request.POST['color']
+        print(color, size)
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))
     except Cart.DoesNotExist:
@@ -28,7 +27,7 @@ def add_cart(request, product_id):
             cart_id=_cart_id(request)
         )
     cart.save()
-
+    product = Product.objects.get(id=product_id)  # get the product
     try:
         cart_item = CartItem.objects.get(product=product, cart=cart)
         cart_item.quantity += 1
